@@ -21,8 +21,9 @@ for time=t
     % find the mean prediction
     s_u(:,j+1) = gmeanfunc(s_u(:,j),dt);
     % find the covariance prediction
-    G_t(:,:,j+1) = (subs(G,[x y z],[s_u(1,j+1) s_u(2,j+1) s_u(3,j+1)]))';
-    P_t(:,:,j+1) = G_t(:,:,j+1)*P_t(:,:,j)*G_t(:,:,j+1)' + dt^2.*R_t;
+    G_t(:,:,j+1) = subs(G,[x y z],[s_u(1,j+1) s_u(2,j+1) s_u(3,j+1)])';
+    P_t(:,:,j+1) = G_t(:,:,j+1)*P_t(:,:,j)*G_t(:,:,j+1)' + R_t;
+    hold on
     K_t(:,:,j+1) = P_t(:,:,j+1)*H_t'*(H_t*P_t(:,:,j+1)*H_t'+ Q_t)^-1;
     zm(j) = normrnd(s_u(1,j+1),100);
     u_upd(:,j) = s_u(:,j+1)+K_t(:,:,j+1)*(zm(j)-s_u(1,j+1));
@@ -30,7 +31,7 @@ for time=t
     j=j+1;
 end
 toc
-plot(0:dt:tf,zm,'-b',0:dt:tf,u_upd(1,:),'-r')
+plot(0:dt:tf,zm,-b,0:dt:tf,u_upd(1,:))
 legend('measured state','filtered state')
 xlabel('Time (sec)');
 ylabel('x1 (feet)');
